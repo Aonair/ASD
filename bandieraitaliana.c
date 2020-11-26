@@ -1,28 +1,76 @@
+/* il tempo di esecuzione è theta di n, dove n sono i nodi dell'albero u. 
+Infatti l'albero viene visitato postordine, permettendo così di poter scomporre il problema in due sottoalberi; sx e dx. 
+Avremmo una suddivisione del tempo t(n) in t(k) + t(n-k-1) + d, dove k sono i nodi del sottoalbero sx.
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "bandieraitaliana.h"
 
+struct node{
+	char * colore;
+	struct node * left;
+	struct node * right;
+};
 
-typedef struct node{
-  int key;
-  struct node * p;
-  struct node * left;
-  struct node * right;
-} * Node;
-
-typedef struct node{
-  int key;
-  int prof;
-  struct nodeProf * p;
-  struct nodeProf * left;
-  struct nodeProf * right;
-} * NodeProf;
-
-
-NodeProf alberoConProf(Node u){
-
+int bandieraItaliana(Node u){
+	int bianco, rosso;
+	return bandieraAux(u, &bianco, &rosso);
 }
 
+int bandieraAux (Node u, int *bianco, int *rosso){
+	int biancoSx=0, biancoDx=0, rossoSx=0, rossoDx=0, rissx, risdx;
+
+
+	if (u == NULL){
+	 	*bianco = 0; 
+		*rosso = 0;
+		return 0;
+	}
+
+	rissx = bandieraAux (u->left,  &biancoSx, &rossoSx);
+	risdx = bandieraAux (u->right, &biancoDx, &rossoDx);
+
+	if (rissx == 0 && risdx == 0){
+
+		if (rossoSx == 0 || rossoDx == 0){
+			if (strcmp(u->colore, "rosso") == 0){
+				*rosso = 1;
+			}
+			else {
+				*rosso = 0;
+				*bianco = 0;;
+
+			}
+		}
+
+		if (rossoSx == 1 || rossoDx == 1) {
+			if (strcmp(u->colore, "bianco") == 0){
+				*bianco = 1;
+				*rosso = 1;
+			}
+			else {
+				*rosso = 0;
+				*bianco = 0;
+
+			}
+		}
+		if ( (rossoSx == 1 || rossoDx == 1) && (biancoSx == 1 || biancoDx == 1)) {
+			if (strcmp(u->colore, "verde") == 0){
+				return 1 || risdx || rissx ;
+			}
+			else {
+				*rosso = 0;
+				*bianco = 0;
+
+			}
+		}
+		
+	}
+	printf ("NODE:%s	BIANCO:%d	ROSSO:%d	RISPSX:%d	RISPDX:%d\n\n", u->colore, *bianco, *rosso, rissx, risdx);
+	return (risdx || rissx);
+}
 
 
 int main(int argc, char const *argv[]) {
@@ -78,7 +126,7 @@ int main(int argc, char const *argv[]) {
  w->colore = "verde";
  w->left = NULL;
  w->right = NULL;
-
+ 
   res = bandieraItaliana(u);
 /*
 Node a,b,c,d,e;
@@ -88,7 +136,7 @@ Node a,b,c,d,e;
  c = (Node)malloc(sizeof(struct node));
  d = (Node)malloc(sizeof(struct node));
  e = (Node)malloc(sizeof(struct node));
-
+ 
 
  a->colore = "bianco";
  a->left = b;
