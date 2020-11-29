@@ -60,7 +60,7 @@ NodeProf alberoConProf(Node u){
   return alberoConProfAux (u, grado, p);
 }
 
-/************************MAIN********************************/
+
 int main(int argc, char const *argv[]) {
   NodeProf ris;
   Node a, b, c, d, e, f, g, h;
