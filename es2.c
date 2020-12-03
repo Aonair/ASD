@@ -3,13 +3,6 @@
 #include <string.h>
 
 /*******************STRUTTURA NODI*****************************/
-typedef struct node{
-  int key;
-  struct node * p;
-  struct node * left;
-  struct node * right;
-} * Node;
-
 typedef struct nodeProf{
   int key;
   int prof;
@@ -19,107 +12,104 @@ typedef struct nodeProf{
 } * NodeProf;
 
 /*******************FUNZIONI DI STAMPA*************************/
-void printNodePreOrder (Node u){
-  if (u == NULL)
-    return;
-  printf(" %d ", u->key);
-  printNodePreOrder (u->left);
-  printNodePreOrder (u->right);
-}
 
-void printNodeProfPreOrder (NodeProf a){
-  if (a == NULL)
-    return;
-  printf(" %d:%d ", a->key, a->prof);
-  printNodePreOrder (a->left);
-  printNodePreOrder (a->right);
-}
+
+/****************CREAZIONE ALBERO CON PROF*******************/
+
 
 /*******************CODICE ESERCIZIO*************************/
-NodeProf alberoConProfAux(Node u, int grado, NodeProf p){
-  NodeProf a;
+NodeProf minimoAntenatoComume(NodeProf u, NodeProf v){
+  NodeProf x = u;
+  NodeProf y = v;
 
-  if (u == NULL){
-    return NULL;
+  while (x!=NULL && y!=NULL) {
+
+    if ( (x->p->key == y->p->key) && (x!=y) ){
+      return x->p;
+    }
+
+    if ( (x->p->key == y->p->key) && (x==y) ){
+      return y;
+    }
+
+    if (x->prof > y->prof){
+      x = x->p;
+    }
+    else {
+      y = y->p;
+    }
+
   }
 
-  a = (NodeProf)malloc(sizeof(struct nodeProf));
-  a->key = u->key;
-  a->prof = grado;
-  a->p = p;
-  a->left = alberoConProfAux (u->left, a->prof+1, a);
-  a->right = alberoConProfAux (u->right, a->prof+1, a);
+  return NULL;
 
-  return a;
-
-}
-
-NodeProf alberoConProf(Node u){
-  int grado=0;
-  NodeProf p = NULL;
-  return alberoConProfAux (u, grado, p);
 }
 
 
 int main(int argc, char const *argv[]) {
-  NodeProf ris;
-  Node a, b, c, d, e, f, g, h;
-  a = (Node)malloc(sizeof(struct node));
-  b = (Node)malloc(sizeof(struct node));
-  c = (Node)malloc(sizeof(struct node));
-  d = (Node)malloc(sizeof(struct node));
-  e = (Node)malloc(sizeof(struct node));
-  f = (Node)malloc(sizeof(struct node));
-  g = (Node)malloc(sizeof(struct node));
-  h = (Node)malloc(sizeof(struct node));
+  NodeProf ris, create;
+  NodeProf a, b, c, d, e, f, g, h;
+  a = (NodeProf)malloc(sizeof(struct nodeProf));
+  b = (NodeProf)malloc(sizeof(struct nodeProf));
+  c = (NodeProf)malloc(sizeof(struct nodeProf));
+  d = (NodeProf)malloc(sizeof(struct nodeProf));
+  e = (NodeProf)malloc(sizeof(struct nodeProf));
+  f = (NodeProf)malloc(sizeof(struct nodeProf));
+  g = (NodeProf)malloc(sizeof(struct nodeProf));
+  h = (NodeProf)malloc(sizeof(struct nodeProf));
 
   a->key = 8;
+  a->prof= 0;
   a->p = NULL;
   a->left = b;
   a->right = c;
 
   b->key = 4;
+  b->prof= 1;
   b->p = a;
   b->left = d;
   b->right = e;
 
   c->key = 7;
+  c->prof=1;
   c->p = a;
   c->left = f;
   c->right = NULL;
 
   d->key = 2;
+  d->prof=2;
   d->p = b;
   d->left = NULL;
   d->right = g;
 
   e->key = 3;
+  e->prof=2;
   e->p = b;
   e->left = NULL;
   e->right = NULL;
 
   f->key = 6;
+  f->prof=2;
   f->p = c;
   f->left = NULL;
   f->right = h;
 
   g->key = 1;
+  g->prof=3;
   g->p = d;
   g->left = NULL;
   g->right = NULL;
 
   h->key = 5;
+  h->prof=3;
   h->p = f;
   h->left = NULL;
   h->right = NULL;
 
-  ris = alberoConProf(a);
+  ris = minimoAntenatoComume (f, h);
 
   printf("\n" );
-  printNodePreOrder(a);
-  printf("\n" );
-  printNodeProfPreOrder(ris);
-  printf("\n" );
+  printf("%d\n", ris->key );
 
  return 0;
 }
